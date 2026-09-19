@@ -1,0 +1,46 @@
+name: photo_calendar
+description: "월 화면에서 사진이 바로 보이는 캘린더. 일정·할 일·메모·사진을 날짜별로 기록."
+publish_to: 'none'
+
+# Play 에 새 버전을 올릴 때마다 +N 을 올릴 것 (versionCode).
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.13.4
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  intl: any
+  google_mobile_ads: ^9.1.0
+  shared_preferences: ^2.5.3
+  sqflite: ^2.4.2
+  path_provider: ^2.1.5
+  path: ^1.9.1
+  image_picker: ^1.2.0
+  image: ^4.5.4
+  url_launcher: ^6.3.2
+  package_info_plus: ^10.2.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.4
+
+flutter:
+  uses-material-design: true
+  generate: true
+
+# 앱 아이콘 생성: dart run flutter_launcher_icons
+# 원본 이미지는 tool/make_icon.py 로 생성.
+flutter_launcher_icons:
+  android: true
+  ios: false
+  image_path: "assets/icon/icon.png"
+  adaptive_icon_background: "#1E88E5"
+  adaptive_icon_foreground: "assets/icon/icon_fg.png"
+  adaptive_icon_monochrome: "assets/icon/icon_fg.png"
