@@ -90,17 +90,22 @@ class _MonthScreenState extends State<MonthScreen> {
                 onTap: _pickMonth,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8),
+                  // 폰트가 큰 기기에서 넘치지 않도록 글자 쪽이 줄어들게 (Flexible + ellipsis)
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
-                        DateFormat(t.monthFormat, locale).format(_month),
-                        style: Theme.of(context).textTheme.titleLarge
-                            ?.copyWith(fontWeight: FontWeight.w600),
+                      Flexible(
+                        child: Text(
+                          DateFormat(t.monthFormat, locale).format(_month),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.titleLarge
+                              ?.copyWith(fontWeight: FontWeight.w600),
+                        ),
                       ),
-                      const SizedBox(width: 4),
                       Icon(
                         Icons.arrow_drop_down,
+                        size: 20,
                         color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                     ],
