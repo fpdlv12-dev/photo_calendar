@@ -10,7 +10,11 @@ import '../util/dates.dart';
 class PhotoViewerScreen extends StatefulWidget {
   final List<Entry> photos;
   final int initialIndex;
-  const PhotoViewerScreen({super.key, required this.photos, required this.initialIndex});
+  const PhotoViewerScreen({
+    super.key,
+    required this.photos,
+    required this.initialIndex,
+  });
 
   @override
   State<PhotoViewerScreen> createState() => _PhotoViewerScreenState();
@@ -18,7 +22,9 @@ class PhotoViewerScreen extends StatefulWidget {
 
 class _PhotoViewerScreenState extends State<PhotoViewerScreen> {
   late final List<Entry> _photos = List.of(widget.photos);
-  late final PageController _page = PageController(initialPage: widget.initialIndex);
+  late final PageController _page = PageController(
+    initialPage: widget.initialIndex,
+  );
   late int _index = widget.initialIndex;
   bool _chrome = true;
 
@@ -37,8 +43,14 @@ class _PhotoViewerScreenState extends State<PhotoViewerScreen> {
         title: Text(t.deleteConfirmTitle),
         content: Text(t.deletePhotoConfirmBody),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(t.cancel)),
-          FilledButton.tonal(onPressed: () => Navigator.pop(ctx, true), child: Text(t.delete)),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(t.cancel),
+          ),
+          FilledButton.tonal(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(t.delete),
+          ),
         ],
       ),
     );
@@ -117,8 +129,11 @@ class _PhotoViewerScreenState extends State<PhotoViewerScreen> {
                   child: Image.file(
                     fileOf(e.file!),
                     fit: BoxFit.contain,
-                    errorBuilder: (_, _, _) =>
-                        const Icon(Icons.broken_image_outlined, color: Colors.white54, size: 64),
+                    errorBuilder: (_, _, _) => const Icon(
+                      Icons.broken_image_outlined,
+                      color: Colors.white54,
+                      size: 64,
+                    ),
                   ),
                 ),
               );

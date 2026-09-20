@@ -12,6 +12,15 @@ Flutter, Android 대상. 한국어 · 영어 · 일본어 · 중국어(간체). 
 | 최대 4장 | 사진이 작아져 한 칸(2×2)에 최대 4장. 더 있으면 마지막 칸에 +N |
 | 모든 사진 | 사진 크기(칸 너비의 절반)는 유지, 칸이 아래로 길어짐. 캘린더를 세로 스크롤 |
 
+그 외 기능:
+- **색상 지정**: 일정·할 일·메모마다 배경색·글자색을 팔레트 또는 색상 선택기(`flutter_colorpicker`)로 지정. 월 화면 칩과 상세 카드에 반영. 글자색을 안 정하면 배경 밝기에 맞춰 자동(검정/흰색).
+- **날짜로 이동**: 월 제목·날짜 제목을 탭하면 날짜 입력 대화상자(키보드 입력 / 달력 전환).
+- **검색** (월 화면 우측 상단 🔍): 키워드 → 제목·본문 LIKE 검색, 결과에 키워드 앞뒤 5자 발췌 + 그날 사진 최대 3장.
+  사진 → 갤러리에서 고른 사진의 dHash(64bit) 를 앱 안 사진의 해시와 비교(해밍 거리 ≤ 10), 결과에 맞은 사진 앞뒤 1장씩 + 그날 첫 텍스트.
+  해시는 사진 저장 시 계산해 `phash` 컬럼에 두고, 없는 옛 사진은 검색 때 계산해 채운다.
+- **한국 공휴일**: `lib/data/holidays.dart`. 양력 고정 휴일은 규칙, 설날·추석·부처님오신날·대체공휴일·선거일은 2024~2030 표.
+  빨간색 + 이름 표시. 설정에서 켜고 끔 (기본: 앱 언어가 한국어면 켬). **2031년 이후는 표를 추가해야 한다.**
+
 ## 구조
 
 ```
@@ -23,17 +32,22 @@ lib/
   widgets/banner_ad_widget.dart  하단 적응형 배너 (Scaffold.bottomNavigationBar 슬롯에 둠 → FAB 가 위로)
   widgets/month_grid.dart        ★ 월 그리드. 3가지 사진 표시 모드 구현
   widgets/photo_mode_selector.dart 사진 표시 옵션 라디오 카드 (온보딩·설정 공용)
+  widgets/color_picker_row.dart  배경색/글자색 한 줄 선택 (기본 · 프리셋 · 직접 선택)
+  data/holidays.dart             한국 공휴일 표 (2024~2030)
+  util/palette.dart              색상 프리셋
+  util/entry_colors.dart         기록의 (배경, 글자) 색 계산 규칙
   l10n/app_*.arb                 UI 문자열 (ko/en/ja/zh) → flutter gen-l10n 이 L10n 클래스 생성
   models/entry.dart              기록 1건 (schedule/todo/memo/photo 를 한 테이블에)
-  services/app_db.dart           sqflite. entries 테이블 하나
-  services/photo_store.dart      사진 복사(1600px) + 320px 정방형 썸네일 (dart:ui 디코더 → isolate JPEG 인코딩)
+  services/app_db.dart           sqflite. entries 테이블 하나 (v2: phash, bg_color, fg_color)
+  services/photo_store.dart      사진 복사(1600px) + 320px 정방형 썸네일 + dHash (dart:ui 디코더 → isolate)
   services/calendar_store.dart   월 단위 캐시 + ChangeNotifier
   services/settings.dart         SharedPreferences (사진 모드, 주 시작 요일, 텍스트 표시, 온보딩 완료)
   util/dates.dart                날짜 키·월 인덱스·그리드 날짜 계산
   screens/onboarding_screen.dart 첫 실행: 소개 + 사진 모드 선택
   screens/month_screen.dart      홈. PageView 로 월 스와이프
-  screens/day_screen.dart        하루 상세 (사진 그리드·일정·할 일·메모) + 추가 시트
-  screens/entry_editor.dart      일정·할 일·메모 편집 바텀시트
+  screens/day_screen.dart        하루 상세 (사진 그리드·일정·할 일·메모) + 추가 시트. 제목 탭 → 날짜 이동
+  screens/entry_editor.dart      일정·할 일·메모 편집 바텀시트 (+ 배경색/글자색)
+  screens/search_screen.dart     키워드 / 사진 검색
   screens/photo_viewer_screen.dart 전체 화면 사진 (스와이프·줌·삭제·다른 날짜로 이동)
   screens/settings_screen.dart   설정 + 앱 정보 + 개인정보처리방침 링크
 tool/

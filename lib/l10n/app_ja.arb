@@ -68,6 +68,25 @@
   "settingsLicenses": "オープンソースライセンス",
   "settingsDataNote": "すべてのデータはこの端末内にのみ保存され、アプリを削除すると一緒に削除されます。",
 
+  "search": "検索",
+  "searchHint": "キーワードを入力",
+  "searchByPhoto": "写真で検索",
+  "searchGo": "検索",
+  "searchNoResults": "結果がありません",
+  "searchResults": "{count}件",
+  "@searchResults": {"placeholders": {"count": {"type": "int"}}},
+  "searchSimilarPhoto": "似ている写真",
+  "searchEmptyHint": "キーワードを入力するか、写真を選んで検索します。\n写真はこのアプリに保存した写真と比較します。",
+  "bgColor": "背景色",
+  "textColor": "文字色",
+  "colorDefault": "標準",
+  "colorCustom": "自分で選ぶ",
+  "colorPickerTitle": "色を選択",
+  "ok": "OK",
+  "jumpToDate": "日付へ移動",
+  "settingsHolidays": "韓国の祝日を表示",
+  "settingsHolidaysSubtitle": "祝日を赤色で名前と一緒に表示",
+
   "dateFormatFull": "yyyy年M月d日 EEEE",
   "monthFormat": "yyyy年M月"
 }

@@ -4,10 +4,12 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../data/holidays.dart';
 import '../l10n/app_localizations.dart';
 import '../models/entry.dart';
 import '../services/settings.dart';
 import '../util/dates.dart';
+import '../util/entry_colors.dart';
 
 /// 월 화면 그리드. 이 앱의 핵심 — 날짜 칸 안에 사진을 직접 그린다.
 ///
@@ -21,6 +23,9 @@ class MonthGrid extends StatelessWidget {
   final PhotoMode mode;
   final int weekStart;
   final bool showText;
+
+  /// 한국 공휴일을 빨간색 + 이름으로 표시
+  final bool showHolidays;
   final File Function(String relative) fileOf;
   final ValueChanged<DateTime> onTapDay;
 
@@ -31,6 +36,7 @@ class MonthGrid extends StatelessWidget {
     required this.mode,
     required this.weekStart,
     required this.showText,
+    this.showHolidays = false,
     required this.fileOf,
     required this.onTapDay,
   });
@@ -47,47 +53,59 @@ class MonthGrid extends StatelessWidget {
     final rows = days.length ~/ 7;
     final locale = Localizations.localeOf(context).toString();
 
-    return LayoutBuilder(builder: (context, c) {
-      final cellW = c.maxWidth / 7;
-      final gridH = c.maxHeight - _headerH;
-      final baseRowH = gridH / rows;
+    return LayoutBuilder(
+      builder: (context, c) {
+        final cellW = c.maxWidth / 7;
+        final gridH = c.maxHeight - _headerH;
+        final baseRowH = gridH / rows;
 
-      final rowHeights = List<double>.generate(rows, (r) {
-        if (mode != PhotoMode.all) return baseRowH;
-        var h = math.max(64.0, baseRowH);
-        for (var i = 0; i < 7; i++) {
-          final d = days[r * 7 + i];
-          h = math.max(h, _allModeCellHeight(cellW, data[dateKey(d)] ?? const []));
-        }
-        return h;
-      });
+        final rowHeights = List<double>.generate(rows, (r) {
+          if (mode != PhotoMode.all) return baseRowH;
+          var h = math.max(64.0, baseRowH);
+          for (var i = 0; i < 7; i++) {
+            final d = days[r * 7 + i];
+            h = math.max(
+              h,
+              _allModeCellHeight(cellW, data[dateKey(d)] ?? const []),
+            );
+          }
+          return h;
+        });
 
-      final body = Column(
-        children: [
-          for (var r = 0; r < rows; r++)
-            SizedBox(
-              height: rowHeights[r],
-              child: Row(
-                children: [
-                  for (var i = 0; i < 7; i++)
-                    Expanded(child: _cell(context, days[r * 7 + i], cellW, rowHeights[r])),
-                ],
+        final body = Column(
+          children: [
+            for (var r = 0; r < rows; r++)
+              SizedBox(
+                height: rowHeights[r],
+                child: Row(
+                  children: [
+                    for (var i = 0; i < 7; i++)
+                      Expanded(
+                        child: _cell(
+                          context,
+                          days[r * 7 + i],
+                          cellW,
+                          rowHeights[r],
+                        ),
+                      ),
+                  ],
+                ),
               ),
-            ),
-        ],
-      );
+          ],
+        );
 
-      return Column(
-        children: [
-          SizedBox(height: _headerH, child: _weekdayHeader(context, locale)),
-          Expanded(
-            child: mode == PhotoMode.all
-                ? SingleChildScrollView(child: body)
-                : body,
-          ),
-        ],
-      );
-    });
+        return Column(
+          children: [
+            SizedBox(height: _headerH, child: _weekdayHeader(context, locale)),
+            Expanded(
+              child: mode == PhotoMode.all
+                  ? SingleChildScrollView(child: body)
+                  : body,
+            ),
+          ],
+        );
+      },
+    );
   }
 
   double _allModeCellHeight(double cellW, List<Entry> entries) {
@@ -116,7 +134,9 @@ class MonthGrid extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
-                  color: _weekdayColor(cs, base.add(Duration(days: i)).weekday) ?? cs.onSurfaceVariant,
+                  color:
+                      _weekdayColor(cs, base.add(Duration(days: i)).weekday) ??
+                      cs.onSurfaceVariant,
                 ),
               ),
             ),
@@ -138,11 +158,16 @@ class MonthGrid extends StatelessWidget {
     final today = sameDay(day, DateTime.now());
     final entries = data[dateKey(day)] ?? const [];
     final photos = entries.where((e) => e.type == EntryType.photo).toList();
-    final items = showText ? entries.where((e) => e.type != EntryType.photo).toList() : const <Entry>[];
+    final items = showText
+        ? entries.where((e) => e.type != EntryType.photo).toList()
+        : const <Entry>[];
 
+    final holiday = showHolidays ? KoreanHolidays.of(day) : null;
     final numColor = today
         ? cs.onPrimary
-        : (_weekdayColor(cs, day.weekday) ?? cs.onSurface);
+        : (holiday != null
+              ? cs.error
+              : (_weekdayColor(cs, day.weekday) ?? cs.onSurface));
 
     return InkWell(
       onTap: () => onTapDay(day),
@@ -151,7 +176,10 @@ class MonthGrid extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
             border: Border(
-              top: BorderSide(color: cs.outlineVariant.withValues(alpha: 0.5), width: 0.5),
+              top: BorderSide(
+                color: cs.outlineVariant.withValues(alpha: 0.5),
+                width: 0.5,
+              ),
             ),
           ),
           padding: const EdgeInsets.all(_pad),
@@ -160,25 +188,51 @@ class MonthGrid extends StatelessWidget {
             children: [
               SizedBox(
                 height: _dayNumH,
-                child: Align(
-                  alignment: Alignment.topLeft,
-                  child: Container(
-                    width: 20,
-                    height: 20,
-                    alignment: Alignment.center,
-                    decoration: today
-                        ? BoxDecoration(color: cs.primary, shape: BoxShape.circle)
-                        : null,
-                    child: Text(
-                      '${day.day}',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: today ? FontWeight.bold : FontWeight.w500,
-                        color: numColor,
-                        height: 1,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: 20,
+                      height: 20,
+                      alignment: Alignment.center,
+                      decoration: today
+                          ? BoxDecoration(
+                              color: cs.primary,
+                              shape: BoxShape.circle,
+                            )
+                          : null,
+                      child: Text(
+                        '${day.day}',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: today ? FontWeight.bold : FontWeight.w500,
+                          color: numColor,
+                          height: 1,
+                        ),
                       ),
                     ),
-                  ),
+                    // 공휴일 이름 (날짜 숫자 오른쪽, 빨간 작은 글씨)
+                    if (holiday != null)
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 2, top: 4),
+                          child: Text(
+                            KoreanHolidays.name(
+                              holiday,
+                              Localizations.localeOf(context).languageCode,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 8.5,
+                              color: cs.error,
+                              height: 1,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
               ),
               Expanded(
@@ -195,76 +249,112 @@ class MonthGrid extends StatelessWidget {
 
   // ------------------------------------------------------------ 고정 높이 모드
 
-  Widget _fixedBody(BuildContext context, L10n t, List<Entry> photos, List<Entry> items) {
-    return LayoutBuilder(builder: (context, c) {
-      final h = c.maxHeight;
-      if (photos.isEmpty) {
-        final fit = math.max(0, (h / _chipH).floor());
-        return _chips(context, t, items, fit);
-      }
-      // 사진 블록은 칸 너비 기준(약 6:7 세로형)까지만 키우고, 남는 높이에 제목을 채운다.
-      // 칸이 그보다 낮으면 사진이 칸에 맞게 작아진다 (제목 1줄은 확보).
-      var photoH = math.min(h, c.maxWidth * 1.15);
-      var fit = ((h - photoH - _gap) / _chipH).floor().clamp(0, items.length);
-      if (items.isNotEmpty && fit == 0 && h > _chipH * 3) {
-        photoH = h - _chipH - _gap;
-        fit = 1;
-      }
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          SizedBox(height: math.max(0, photoH), child: _photoBlock(context, t, photos, c.maxWidth, photoH)),
-          if (fit > 0) ...[
-            const SizedBox(height: _gap),
-            _chips(context, t, items, fit),
+  Widget _fixedBody(
+    BuildContext context,
+    L10n t,
+    List<Entry> photos,
+    List<Entry> items,
+  ) {
+    return LayoutBuilder(
+      builder: (context, c) {
+        final h = c.maxHeight;
+        if (photos.isEmpty) {
+          final fit = math.max(0, (h / _chipH).floor());
+          return _chips(context, t, items, fit);
+        }
+        // 사진 블록은 칸 너비 기준(약 6:7 세로형)까지만 키우고, 남는 높이에 제목을 채운다.
+        // 칸이 그보다 낮으면 사진이 칸에 맞게 작아진다 (제목 1줄은 확보).
+        var photoH = math.min(h, c.maxWidth * 1.15);
+        var fit = ((h - photoH - _gap) / _chipH).floor().clamp(0, items.length);
+        if (items.isNotEmpty && fit == 0 && h > _chipH * 3) {
+          photoH = h - _chipH - _gap;
+          fit = 1;
+        }
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            SizedBox(
+              height: math.max(0, photoH),
+              child: _photoBlock(context, t, photos, c.maxWidth, photoH),
+            ),
+            if (fit > 0) ...[
+              const SizedBox(height: _gap),
+              _chips(context, t, items, fit),
+            ],
           ],
-        ],
-      );
-    });
+        );
+      },
+    );
   }
 
-  Widget _photoBlock(BuildContext context, L10n t, List<Entry> photos, double w, double h) {
+  Widget _photoBlock(
+    BuildContext context,
+    L10n t,
+    List<Entry> photos,
+    double w,
+    double h,
+  ) {
     if (h <= 4) return const SizedBox.shrink();
     if (mode == PhotoMode.one || photos.length == 1) {
       // 1장 모드: 사진은 그대로 보이고 모서리에 +N 배지만
-      return _thumb(photos.first, badge: photos.length > 1 ? t.morePhotos(photos.length - 1) : null);
+      return _thumb(
+        photos.first,
+        badge: photos.length > 1 ? t.morePhotos(photos.length - 1) : null,
+      );
     }
     // PhotoMode.four: 2장 → 가로 2칸, 3~4장 → 2×2
     if (photos.length == 2) {
-      return Row(children: [
-        Expanded(child: _thumb(photos[0])),
-        const SizedBox(width: _gap),
-        Expanded(child: _thumb(photos[1])),
-      ]);
+      return Row(
+        children: [
+          Expanded(child: _thumb(photos[0])),
+          const SizedBox(width: _gap),
+          Expanded(child: _thumb(photos[1])),
+        ],
+      );
     }
     final shown = photos.take(4).toList();
     final more = photos.length - 4;
-    return Column(children: [
-      Expanded(
-        child: Row(children: [
-          Expanded(child: _thumb(shown[0])),
-          const SizedBox(width: _gap),
-          Expanded(child: _thumb(shown[1])),
-        ]),
-      ),
-      const SizedBox(height: _gap),
-      Expanded(
-        child: Row(children: [
-          Expanded(child: _thumb(shown[2])),
-          const SizedBox(width: _gap),
-          Expanded(
-            child: shown.length > 3
-                ? _thumb(shown[3], overlay: more > 0 ? t.morePhotos(more) : null)
-                : const SizedBox.shrink(),
+    return Column(
+      children: [
+        Expanded(
+          child: Row(
+            children: [
+              Expanded(child: _thumb(shown[0])),
+              const SizedBox(width: _gap),
+              Expanded(child: _thumb(shown[1])),
+            ],
           ),
-        ]),
-      ),
-    ]);
+        ),
+        const SizedBox(height: _gap),
+        Expanded(
+          child: Row(
+            children: [
+              Expanded(child: _thumb(shown[2])),
+              const SizedBox(width: _gap),
+              Expanded(
+                child: shown.length > 3
+                    ? _thumb(
+                        shown[3],
+                        overlay: more > 0 ? t.morePhotos(more) : null,
+                      )
+                    : const SizedBox.shrink(),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
   }
 
   // ------------------------------------------------------------ 모두 보기 모드
 
-  Widget _allBody(BuildContext context, L10n t, double cellW, List<Entry> photos, List<Entry> items) {
+  Widget _allBody(
+    BuildContext context,
+    L10n t,
+    double cellW,
+    List<Entry> photos,
+    List<Entry> items,
+  ) {
     final side = (cellW - _pad * 2 - _gap) / 2;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -273,11 +363,16 @@ class MonthGrid extends StatelessWidget {
           if (i > 0) const SizedBox(height: _gap),
           SizedBox(
             height: side,
-            child: Row(children: [
-              SizedBox(width: side, child: _thumb(photos[i])),
-              const SizedBox(width: _gap),
-              SizedBox(width: side, child: i + 1 < photos.length ? _thumb(photos[i + 1]) : null),
-            ]),
+            child: Row(
+              children: [
+                SizedBox(width: side, child: _thumb(photos[i])),
+                const SizedBox(width: _gap),
+                SizedBox(
+                  width: side,
+                  child: i + 1 < photos.length ? _thumb(photos[i + 1]) : null,
+                ),
+              ],
+            ),
           ),
         ],
         if (photos.isNotEmpty && items.isNotEmpty) const SizedBox(height: _gap),
@@ -302,14 +397,21 @@ class MonthGrid extends StatelessWidget {
               fileOf(path),
               fit: BoxFit.cover,
               gaplessPlayback: true,
-              errorBuilder: (_, _, _) => const ColoredBox(color: Color(0x22000000)),
+              errorBuilder: (_, _, _) =>
+                  const ColoredBox(color: Color(0x22000000)),
             ),
           if (overlay != null)
             ColoredBox(
               color: const Color(0x66000000),
               child: Center(
-                child: Text(overlay,
-                    style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold)),
+                child: Text(
+                  overlay,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
             ),
           if (badge != null)
@@ -322,8 +424,15 @@ class MonthGrid extends StatelessWidget {
                   color: const Color(0xAA000000),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: Text(badge,
-                    style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold, height: 1.3)),
+                child: Text(
+                  badge,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                    height: 1.3,
+                  ),
+                ),
               ),
             ),
         ],
@@ -335,7 +444,9 @@ class MonthGrid extends StatelessWidget {
     if (items.isEmpty || fit == 0) return const SizedBox.shrink();
     final overflow = items.length > fit;
     // 한 줄밖에 못 넣으면 첫 제목 + "+N" 을 같은 줄에
-    if (overflow && fit == 1) return _chipRow(context, items.first, more: items.length - 1, t: t);
+    if (overflow && fit == 1) {
+      return _chipRow(context, items.first, more: items.length - 1, t: t);
+    }
     final shown = overflow ? items.take(fit - 1).toList() : items;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -346,27 +457,35 @@ class MonthGrid extends StatelessWidget {
             height: _chipH,
             child: Text(
               t.moreItems(items.length - shown.length),
-              style: TextStyle(fontSize: 10, color: Theme.of(context).colorScheme.onSurfaceVariant, height: 1.3),
+              style: TextStyle(
+                fontSize: 10,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                height: 1.3,
+              ),
             ),
           ),
       ],
     );
   }
 
-  Widget _chipRow(BuildContext context, Entry e, {required int more, required L10n t}) {
+  Widget _chipRow(
+    BuildContext context,
+    Entry e, {
+    required int more,
+    required L10n t,
+  }) {
     final cs = Theme.of(context).colorScheme;
-    final (bg, fg) = switch (e.type) {
-      EntryType.schedule => (cs.primaryContainer, cs.onPrimaryContainer),
-      EntryType.todo => (cs.tertiaryContainer, cs.onTertiaryContainer),
-      _ => (cs.secondaryContainer, cs.onSecondaryContainer),
-    };
+    final (bg, fg) = entryColors(e, cs);
     final text = e.type == EntryType.memo && e.title.isEmpty ? e.body : e.title;
     return SizedBox(
       height: _chipH,
       child: Container(
         margin: const EdgeInsets.only(bottom: 1),
         padding: const EdgeInsets.symmetric(horizontal: 3),
-        decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(3)),
+        decoration: BoxDecoration(
+          color: bg,
+          borderRadius: BorderRadius.circular(3),
+        ),
         child: Row(
           children: [
             Expanded(
@@ -378,12 +497,22 @@ class MonthGrid extends StatelessWidget {
                   fontSize: 9.5,
                   color: fg,
                   height: 1.35,
-                  decoration: e.type == EntryType.todo && e.done ? TextDecoration.lineThrough : null,
+                  decoration: e.type == EntryType.todo && e.done
+                      ? TextDecoration.lineThrough
+                      : null,
                 ),
               ),
             ),
             if (more > 0)
-              Text('+$more', style: TextStyle(fontSize: 9, color: fg, fontWeight: FontWeight.bold, height: 1.35)),
+              Text(
+                '+$more',
+                style: TextStyle(
+                  fontSize: 9,
+                  color: fg,
+                  fontWeight: FontWeight.bold,
+                  height: 1.35,
+                ),
+              ),
           ],
         ),
       ),

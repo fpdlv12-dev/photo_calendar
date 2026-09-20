@@ -68,6 +68,25 @@
   "settingsLicenses": "开源许可",
   "settingsDataNote": "所有数据仅保存在本设备中，卸载应用时会一并删除。",
 
+  "search": "搜索",
+  "searchHint": "输入关键词",
+  "searchByPhoto": "按照片搜索",
+  "searchGo": "搜索",
+  "searchNoResults": "没有结果",
+  "searchResults": "{count}条结果",
+  "@searchResults": {"placeholders": {"count": {"type": "int"}}},
+  "searchSimilarPhoto": "相似照片",
+  "searchEmptyHint": "输入关键词或选择一张照片进行搜索。\n照片将与本应用中保存的照片进行比对。",
+  "bgColor": "背景色",
+  "textColor": "文字颜色",
+  "colorDefault": "默认",
+  "colorCustom": "自定义",
+  "colorPickerTitle": "选择颜色",
+  "ok": "确定",
+  "jumpToDate": "跳转到日期",
+  "settingsHolidays": "显示韩国公休日",
+  "settingsHolidaysSubtitle": "以红色显示公休日及其名称",
+
   "dateFormatFull": "yyyy年M月d日 EEEE",
   "monthFormat": "yyyy年M月"
 }

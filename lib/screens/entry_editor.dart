@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import '../app_scope.dart';
 import '../l10n/app_localizations.dart';
 import '../models/entry.dart';
+import '../util/entry_colors.dart';
+import '../util/palette.dart';
+import '../widgets/color_picker_row.dart';
 
 /// 일정·할 일·메모 편집 시트. 저장했으면 true 를 반환한다.
 Future<bool?> showEntryEditor(
@@ -34,6 +37,12 @@ class _EntryEditorState extends State<_EntryEditor> {
   late final _body = TextEditingController(text: widget.existing?.body ?? '');
   TimeOfDay? _time;
   bool _error = false;
+  late Color? _bg = widget.existing?.bgColor == null
+      ? null
+      : Color(widget.existing!.bgColor!);
+  late Color? _fg = widget.existing?.fgColor == null
+      ? null
+      : Color(widget.existing!.fgColor!);
 
   @override
   void initState() {
@@ -75,21 +84,31 @@ class _EntryEditorState extends State<_EntryEditor> {
     }
     final existing = widget.existing;
     if (existing == null) {
-      await store.add(Entry(
-        date: widget.date,
-        type: widget.type,
-        title: title,
-        body: body,
-        time: widget.type == EntryType.schedule ? _timeStr : null,
-        createdAt: DateTime.now().millisecondsSinceEpoch,
-      ));
+      await store.add(
+        Entry(
+          date: widget.date,
+          type: widget.type,
+          title: title,
+          body: body,
+          time: widget.type == EntryType.schedule ? _timeStr : null,
+          bgColor: _bg?.toARGB32(),
+          fgColor: _fg?.toARGB32(),
+          createdAt: DateTime.now().millisecondsSinceEpoch,
+        ),
+      );
     } else {
-      await store.update(existing.copyWith(
-        title: title,
-        body: body,
-        time: _timeStr,
-        clearTime: _timeStr == null,
-      ));
+      await store.update(
+        existing.copyWith(
+          title: title,
+          body: body,
+          time: _timeStr,
+          clearTime: _timeStr == null,
+          bgColor: _bg?.toARGB32(),
+          clearBgColor: _bg == null,
+          fgColor: _fg?.toARGB32(),
+          clearFgColor: _fg == null,
+        ),
+      );
     }
     if (mounted) Navigator.of(context).pop(true);
   }
@@ -103,8 +122,14 @@ class _EntryEditorState extends State<_EntryEditor> {
         title: Text(t.deleteConfirmTitle),
         content: Text(t.deleteConfirmBody),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(t.cancel)),
-          FilledButton.tonal(onPressed: () => Navigator.pop(ctx, true), child: Text(t.delete)),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(t.cancel),
+          ),
+          FilledButton.tonal(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(t.delete),
+          ),
         ],
       ),
     );
@@ -112,6 +137,63 @@ class _EntryEditorState extends State<_EntryEditor> {
       await store.remove(widget.existing!);
       if (mounted) Navigator.of(context).pop(false);
     }
+  }
+
+  /// 배경색·글자색 선택 + 월 화면 칩 미리보기
+  Widget _colorSection(BuildContext context, L10n t, ColorScheme cs) {
+    // 실제 칩과 같은 규칙으로 미리보기 색 계산
+    final (defBg, defFg) = entryColors(
+      Entry(
+        date: widget.date,
+        type: widget.type,
+        bgColor: _bg?.toARGB32(),
+        fgColor: _fg?.toARGB32(),
+        createdAt: 0,
+      ),
+      cs,
+    );
+    final previewText =
+        (widget.type == EntryType.memo ? _body.text : _title.text).trim();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Row(
+          children: [
+            Icon(Icons.palette_outlined, size: 20, color: cs.onSurfaceVariant),
+            const SizedBox(width: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              decoration: BoxDecoration(
+                color: defBg,
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Text(
+                previewText.isEmpty
+                    ? t.titleHint
+                    : previewText.replaceAll('\n', ' '),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(color: defFg, fontSize: 13),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        ColorPickerRow(
+          label: t.bgColor,
+          presets: Palette.backgrounds,
+          value: _bg,
+          onChanged: (c) => setState(() => _bg = c),
+        ),
+        const SizedBox(height: 8),
+        ColorPickerRow(
+          label: t.textColor,
+          presets: Palette.foregrounds,
+          value: _fg,
+          onChanged: (c) => setState(() => _fg = c),
+        ),
+      ],
+    );
   }
 
   @override
@@ -128,7 +210,8 @@ class _EntryEditorState extends State<_EntryEditor> {
     return Padding(
       padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
       child: SafeArea(
-        child: Padding(
+        // 키보드가 올라오면 시트가 길어지므로 스크롤 가능하게
+        child: SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -159,7 +242,7 @@ class _EntryEditorState extends State<_EntryEditor> {
                     border: const OutlineInputBorder(),
                     errorText: _error ? t.titleRequired : null,
                   ),
-                  onChanged: (_) => _error ? setState(() => _error = false) : null,
+                  onChanged: (_) => setState(() => _error = false),
                 )
               else ...[
                 TextField(
@@ -171,14 +254,19 @@ class _EntryEditorState extends State<_EntryEditor> {
                     border: const OutlineInputBorder(),
                     errorText: _error ? t.titleRequired : null,
                   ),
-                  onChanged: (_) => _error ? setState(() => _error = false) : null,
-                  onSubmitted: (_) => widget.type == EntryType.todo ? _save() : null,
+                  onChanged: (_) => setState(() => _error = false),
+                  onSubmitted: (_) =>
+                      widget.type == EntryType.todo ? _save() : null,
                 ),
                 if (widget.type == EntryType.schedule) ...[
                   const SizedBox(height: 12),
                   Row(
                     children: [
-                      Icon(Icons.schedule, size: 20, color: cs.onSurfaceVariant),
+                      Icon(
+                        Icons.schedule,
+                        size: 20,
+                        color: cs.onSurfaceVariant,
+                      ),
                       const SizedBox(width: 8),
                       Text(t.timeLabel),
                       const Spacer(),
@@ -198,14 +286,21 @@ class _EntryEditorState extends State<_EntryEditor> {
                     controller: _body,
                     minLines: 2,
                     maxLines: 5,
-                    decoration: InputDecoration(hintText: t.noteHint, border: const OutlineInputBorder()),
+                    decoration: InputDecoration(
+                      hintText: t.noteHint,
+                      border: const OutlineInputBorder(),
+                    ),
                   ),
                 ],
               ],
               const SizedBox(height: 16),
+              _colorSection(context, t, cs),
+              const SizedBox(height: 16),
               FilledButton(
                 onPressed: _save,
-                style: FilledButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 14)),
+                style: FilledButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                ),
                 child: Text(t.save),
               ),
             ],

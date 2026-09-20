@@ -5,8 +5,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 enum PhotoMode {
   /// 1장 — 칸을 사진 한 장으로 채움
   one,
+
   /// 최대 4장 — 사진이 작아져 한 칸(2×2)에 들어감
   four,
+
   /// 모든 사진 — 사진 크기는 유지, 칸이 아래로 길어져 캘린더를 스크롤
   all,
 }
@@ -16,11 +18,13 @@ class AppSettings extends ChangeNotifier {
   static const _kWeekStart = 'week_start';
   static const _kShowText = 'show_text';
   static const _kOnboarded = 'onboarded';
+  static const _kHolidays = 'show_holidays';
 
   final SharedPreferences _prefs;
   AppSettings(this._prefs);
 
-  PhotoMode get photoMode => PhotoMode.values[_prefs.getInt(_kPhotoMode) ?? PhotoMode.four.index];
+  PhotoMode get photoMode =>
+      PhotoMode.values[_prefs.getInt(_kPhotoMode) ?? PhotoMode.four.index];
   set photoMode(PhotoMode v) {
     _prefs.setInt(_kPhotoMode, v.index);
     notifyListeners();
@@ -37,6 +41,14 @@ class AppSettings extends ChangeNotifier {
   bool get showText => _prefs.getBool(_kShowText) ?? true;
   set showText(bool v) {
     _prefs.setBool(_kShowText, v);
+    notifyListeners();
+  }
+
+  /// 한국 공휴일 표시. 설정 전이면 앱 언어가 한국어일 때만 켠다.
+  bool? get showHolidaysOrNull => _prefs.getBool(_kHolidays);
+  bool holidaysEnabled(bool defaultValue) => showHolidaysOrNull ?? defaultValue;
+  set showHolidays(bool v) {
+    _prefs.setBool(_kHolidays, v);
     notifyListeners();
   }
 

@@ -204,6 +204,60 @@ class L10nKo extends L10n {
   String get settingsDataNote => '모든 데이터는 이 기기 안에만 저장됩니다. 앱을 삭제하면 함께 삭제됩니다.';
 
   @override
+  String get search => '검색';
+
+  @override
+  String get searchHint => '키워드를 입력하세요';
+
+  @override
+  String get searchByPhoto => '사진으로 검색';
+
+  @override
+  String get searchGo => '확인';
+
+  @override
+  String get searchNoResults => '검색 결과가 없어요';
+
+  @override
+  String searchResults(int count) {
+    return '결과 $count개';
+  }
+
+  @override
+  String get searchSimilarPhoto => '비슷한 사진';
+
+  @override
+  String get searchEmptyHint =>
+      '키워드를 입력하거나 사진을 골라 검색하세요.\n사진은 이 앱에 넣어 둔 사진과 비교합니다.';
+
+  @override
+  String get bgColor => '배경색';
+
+  @override
+  String get textColor => '글자색';
+
+  @override
+  String get colorDefault => '기본';
+
+  @override
+  String get colorCustom => '직접 선택';
+
+  @override
+  String get colorPickerTitle => '색상 선택';
+
+  @override
+  String get ok => '확인';
+
+  @override
+  String get jumpToDate => '날짜로 이동';
+
+  @override
+  String get settingsHolidays => '한국 공휴일 표시';
+
+  @override
+  String get settingsHolidaysSubtitle => '공휴일을 빨간색으로, 이름과 함께 표시';
+
+  @override
   String get dateFormatFull => 'yyyy년 M월 d일 EEEE';
 
   @override

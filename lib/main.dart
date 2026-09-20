@@ -23,10 +23,12 @@ Future<void> main() async {
   final photos = PhotoStore();
   await Future.wait([db.open(), photos.init()]);
 
-  runApp(PhotoCalendarApp(
-    settings: AppSettings(prefs),
-    store: CalendarStore(db, photos),
-  ));
+  runApp(
+    PhotoCalendarApp(
+      settings: AppSettings(prefs),
+      store: CalendarStore(db, photos),
+    ),
+  );
 }
 
 const kSeedColor = Color(0xFF1E88E5);
@@ -34,7 +36,11 @@ const kSeedColor = Color(0xFF1E88E5);
 class PhotoCalendarApp extends StatelessWidget {
   final AppSettings settings;
   final CalendarStore store;
-  const PhotoCalendarApp({super.key, required this.settings, required this.store});
+  const PhotoCalendarApp({
+    super.key,
+    required this.settings,
+    required this.store,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -62,8 +68,9 @@ class PhotoCalendarApp extends StatelessWidget {
         },
         home: ListenableBuilder(
           listenable: settings,
-          builder: (context, _) =>
-              settings.onboarded ? const MonthScreen() : const OnboardingScreen(),
+          builder: (context, _) => settings.onboarded
+              ? const MonthScreen()
+              : const OnboardingScreen(),
         ),
       ),
     );

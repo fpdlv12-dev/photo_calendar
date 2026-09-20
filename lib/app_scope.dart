@@ -20,5 +20,6 @@ class AppScope extends InheritedWidget {
       context.dependOnInheritedWidgetOfExactType<AppScope>()!;
 
   @override
-  bool updateShouldNotify(AppScope old) => settings != old.settings || store != old.store;
+  bool updateShouldNotify(AppScope old) =>
+      settings != old.settings || store != old.store;
 }

@@ -43,6 +43,18 @@ No more tapping every single date to see what you saved — open a month and you
 • Full-screen photo viewer
   Swipe between photos, pinch to zoom, or move a photo to another date.
 
+• Your own colors
+  Pick a background and text color for each event, to-do and note.
+
+• Search
+  Search by keyword, or by photo: pick a photo from your gallery and the app finds the matching photo in your calendar.
+
+• Jump to any date
+  Tap the title and type a date to go straight there.
+
+• Korean public holidays
+  Shown in red with their names (can be turned off in Settings).
+
 • Week starts on Sunday or Monday
 
 🔒 Private by design
@@ -100,6 +112,18 @@ This app contains ads (a bottom banner and one interstitial per day).
 • 写真を大きく表示
   スワイプで切り替え、ピンチで拡大、別の日付への移動もできます。
 
+• 自分だけの色
+  予定・やること・メモごとに背景色と文字色を選べます。
+
+• 検索
+  キーワードでも、写真でも検索できます。ギャラリーの写真を選ぶと、カレンダー内の同じ写真を探してその日へ。
+
+• 日付へすぐ移動
+  タイトルをタップして日付を入力すると、その月・その日へ移動します。
+
+• 韓国の祝日表示
+  祝日を赤色で名前と一緒に表示（設定でオフにできます）。
+
 • 週の始まりを選択（日曜日 / 月曜日）
 
 🔒 プライバシーも安心
@@ -155,6 +179,18 @@ This app contains ads (a bottom banner and one interstitial per day).
 
 • 大图查看
   左右滑动切换，双指缩放，还可以移动到其他日期。
+
+• 自定义颜色
+  为每条日程、待办、备忘选择背景色和文字颜色。
+
+• 搜索
+  按关键词或按照片搜索。从相册选一张照片，应用会在日历中找到相同的照片并带你到那一天。
+
+• 快速跳转日期
+  点击标题并输入日期，直接跳转到那个月、那一天。
+
+• 韩国公休日显示
+  以红色显示公休日及其名称（可在设置中关闭）。
 
 • 每周开始于周日或周一
 

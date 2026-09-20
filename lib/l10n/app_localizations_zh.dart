@@ -204,6 +204,59 @@ class L10nZh extends L10n {
   String get settingsDataNote => '所有数据仅保存在本设备中，卸载应用时会一并删除。';
 
   @override
+  String get search => '搜索';
+
+  @override
+  String get searchHint => '输入关键词';
+
+  @override
+  String get searchByPhoto => '按照片搜索';
+
+  @override
+  String get searchGo => '搜索';
+
+  @override
+  String get searchNoResults => '没有结果';
+
+  @override
+  String searchResults(int count) {
+    return '$count条结果';
+  }
+
+  @override
+  String get searchSimilarPhoto => '相似照片';
+
+  @override
+  String get searchEmptyHint => '输入关键词或选择一张照片进行搜索。\n照片将与本应用中保存的照片进行比对。';
+
+  @override
+  String get bgColor => '背景色';
+
+  @override
+  String get textColor => '文字颜色';
+
+  @override
+  String get colorDefault => '默认';
+
+  @override
+  String get colorCustom => '自定义';
+
+  @override
+  String get colorPickerTitle => '选择颜色';
+
+  @override
+  String get ok => '确定';
+
+  @override
+  String get jumpToDate => '跳转到日期';
+
+  @override
+  String get settingsHolidays => '显示韩国公休日';
+
+  @override
+  String get settingsHolidaysSubtitle => '以红色显示公休日及其名称';
+
+  @override
   String get dateFormatFull => 'yyyy年M月d日 EEEE';
 
   @override

@@ -39,21 +39,40 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         color: cs.primaryContainer,
                         borderRadius: BorderRadius.circular(24),
                       ),
-                      child: Icon(Icons.photo_library_rounded, size: 44, color: cs.onPrimaryContainer),
+                      child: Icon(
+                        Icons.photo_library_rounded,
+                        size: 44,
+                        color: cs.onPrimaryContainer,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 24),
-                  Text(t.onboardingHeadline,
-                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold)),
+                  Text(
+                    t.onboardingHeadline,
+                    style: Theme.of(context).textTheme.headlineMedium
+                        ?.copyWith(fontWeight: FontWeight.bold),
+                  ),
                   const SizedBox(height: 12),
-                  Text(t.onboardingBody,
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: cs.onSurfaceVariant)),
+                  Text(
+                    t.onboardingBody,
+                    style: Theme.of(context).textTheme.bodyLarge
+                        ?.copyWith(color: cs.onSurfaceVariant),
+                  ),
                   const SizedBox(height: 32),
-                  Text(t.onboardingChoose, style: Theme.of(context).textTheme.titleMedium),
+                  Text(
+                    t.onboardingChoose,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
                   const SizedBox(height: 12),
-                  PhotoModeSelector(value: _mode, onChanged: (m) => setState(() => _mode = m)),
-                  Text(t.onboardingHint,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(color: cs.onSurfaceVariant)),
+                  PhotoModeSelector(
+                    value: _mode,
+                    onChanged: (m) => setState(() => _mode = m),
+                  ),
+                  Text(
+                    t.onboardingHint,
+                    style: Theme.of(context).textTheme.bodySmall
+                        ?.copyWith(color: cs.onSurfaceVariant),
+                  ),
                 ],
               ),
             ),
@@ -66,7 +85,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     settings.photoMode = _mode;
                     settings.finishOnboarding();
                   },
-                  style: FilledButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 16)),
+                  style: FilledButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                  ),
                   child: Text(t.start),
                 ),
               ),

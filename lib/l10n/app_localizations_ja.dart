@@ -204,6 +204,60 @@ class L10nJa extends L10n {
   String get settingsDataNote => 'すべてのデータはこの端末内にのみ保存され、アプリを削除すると一緒に削除されます。';
 
   @override
+  String get search => '検索';
+
+  @override
+  String get searchHint => 'キーワードを入力';
+
+  @override
+  String get searchByPhoto => '写真で検索';
+
+  @override
+  String get searchGo => '検索';
+
+  @override
+  String get searchNoResults => '結果がありません';
+
+  @override
+  String searchResults(int count) {
+    return '$count件';
+  }
+
+  @override
+  String get searchSimilarPhoto => '似ている写真';
+
+  @override
+  String get searchEmptyHint =>
+      'キーワードを入力するか、写真を選んで検索します。\n写真はこのアプリに保存した写真と比較します。';
+
+  @override
+  String get bgColor => '背景色';
+
+  @override
+  String get textColor => '文字色';
+
+  @override
+  String get colorDefault => '標準';
+
+  @override
+  String get colorCustom => '自分で選ぶ';
+
+  @override
+  String get colorPickerTitle => '色を選択';
+
+  @override
+  String get ok => 'OK';
+
+  @override
+  String get jumpToDate => '日付へ移動';
+
+  @override
+  String get settingsHolidays => '韓国の祝日を表示';
+
+  @override
+  String get settingsHolidaysSubtitle => '祝日を赤色で名前と一緒に表示';
+
+  @override
   String get dateFormatFull => 'yyyy年M月d日 EEEE';
 
   @override

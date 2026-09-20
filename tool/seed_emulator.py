@@ -102,6 +102,14 @@ for i, (dt, ty, title, body, tm, done, f, th) in enumerate(rows):
     sql_lines.append(
         "INSERT INTO entries(date,type,title,body,time,done,file,thumb,created_at) VALUES("
         f"{q(dt)},{ty},{q(title)},{q(body)},{q(tm)},{done},{q(f)},{q(th)},{t0 + i});")
+# 사용자 색상 예시 (배경/글자)
+sql_lines += [
+    "UPDATE entries SET bg_color=%d, fg_color=%d WHERE title='치과 예약';" % (0xFFFFCDD2, 0xFFC62828),
+    "UPDATE entries SET bg_color=%d WHERE title='팀 회의';" % 0xFFFFF9C4,
+    "UPDATE entries SET bg_color=%d, fg_color=%d WHERE title='제주 여행';" % (0xFF1565C0, 0xFFFFFFFF),
+    "UPDATE entries SET fg_color=%d WHERE title='보고서 제출';" % 0xFFC62828,
+    "UPDATE entries SET bg_color=%d, fg_color=%d WHERE body LIKE '렌터카%%';" % (0xFFE1BEE7, 0xFF6A1B9A),
+]
 sql_lines.append("COMMIT;")
 sql_path = os.path.join(TMP, "seed.sql")
 with open(sql_path, "w", encoding="utf-8", newline="\n") as fp:

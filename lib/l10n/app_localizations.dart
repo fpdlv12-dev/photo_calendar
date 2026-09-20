@@ -467,6 +467,108 @@ abstract class L10n {
   /// **'모든 데이터는 이 기기 안에만 저장됩니다. 앱을 삭제하면 함께 삭제됩니다.'**
   String get settingsDataNote;
 
+  /// No description provided for @search.
+  ///
+  /// In ko, this message translates to:
+  /// **'검색'**
+  String get search;
+
+  /// No description provided for @searchHint.
+  ///
+  /// In ko, this message translates to:
+  /// **'키워드를 입력하세요'**
+  String get searchHint;
+
+  /// No description provided for @searchByPhoto.
+  ///
+  /// In ko, this message translates to:
+  /// **'사진으로 검색'**
+  String get searchByPhoto;
+
+  /// No description provided for @searchGo.
+  ///
+  /// In ko, this message translates to:
+  /// **'확인'**
+  String get searchGo;
+
+  /// No description provided for @searchNoResults.
+  ///
+  /// In ko, this message translates to:
+  /// **'검색 결과가 없어요'**
+  String get searchNoResults;
+
+  /// No description provided for @searchResults.
+  ///
+  /// In ko, this message translates to:
+  /// **'결과 {count}개'**
+  String searchResults(int count);
+
+  /// No description provided for @searchSimilarPhoto.
+  ///
+  /// In ko, this message translates to:
+  /// **'비슷한 사진'**
+  String get searchSimilarPhoto;
+
+  /// No description provided for @searchEmptyHint.
+  ///
+  /// In ko, this message translates to:
+  /// **'키워드를 입력하거나 사진을 골라 검색하세요.\n사진은 이 앱에 넣어 둔 사진과 비교합니다.'**
+  String get searchEmptyHint;
+
+  /// No description provided for @bgColor.
+  ///
+  /// In ko, this message translates to:
+  /// **'배경색'**
+  String get bgColor;
+
+  /// No description provided for @textColor.
+  ///
+  /// In ko, this message translates to:
+  /// **'글자색'**
+  String get textColor;
+
+  /// No description provided for @colorDefault.
+  ///
+  /// In ko, this message translates to:
+  /// **'기본'**
+  String get colorDefault;
+
+  /// No description provided for @colorCustom.
+  ///
+  /// In ko, this message translates to:
+  /// **'직접 선택'**
+  String get colorCustom;
+
+  /// No description provided for @colorPickerTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'색상 선택'**
+  String get colorPickerTitle;
+
+  /// No description provided for @ok.
+  ///
+  /// In ko, this message translates to:
+  /// **'확인'**
+  String get ok;
+
+  /// No description provided for @jumpToDate.
+  ///
+  /// In ko, this message translates to:
+  /// **'날짜로 이동'**
+  String get jumpToDate;
+
+  /// No description provided for @settingsHolidays.
+  ///
+  /// In ko, this message translates to:
+  /// **'한국 공휴일 표시'**
+  String get settingsHolidays;
+
+  /// No description provided for @settingsHolidaysSubtitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'공휴일을 빨간색으로, 이름과 함께 표시'**
+  String get settingsHolidaysSubtitle;
+
   /// No description provided for @dateFormatFull.
   ///
   /// In ko, this message translates to:

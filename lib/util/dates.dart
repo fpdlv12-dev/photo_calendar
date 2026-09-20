@@ -20,7 +20,11 @@ List<DateTime> gridDays(DateTime month, int weekStart) {
   final start = first.subtract(Duration(days: offset));
   final daysInMonth = DateTime(month.year, month.month + 1, 0).day;
   final rows = ((offset + daysInMonth) / 7).ceil();
-  return List.generate(rows * 7, (i) => DateTime(start.year, start.month, start.day + i));
+  return List.generate(
+    rows * 7,
+    (i) => DateTime(start.year, start.month, start.day + i),
+  );
 }
 
-bool sameDay(DateTime a, DateTime b) => a.year == b.year && a.month == b.month && a.day == b.day;
+bool sameDay(DateTime a, DateTime b) =>
+    a.year == b.year && a.month == b.month && a.day == b.day;

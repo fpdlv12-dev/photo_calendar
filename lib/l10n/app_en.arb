@@ -68,6 +68,25 @@
   "settingsLicenses": "Open source licenses",
   "settingsDataNote": "All data is stored only on this device and is removed when you uninstall the app.",
 
+  "search": "Search",
+  "searchHint": "Enter a keyword",
+  "searchByPhoto": "Search by photo",
+  "searchGo": "Search",
+  "searchNoResults": "No results",
+  "searchResults": "{count} results",
+  "@searchResults": {"placeholders": {"count": {"type": "int"}}},
+  "searchSimilarPhoto": "Similar photo",
+  "searchEmptyHint": "Type a keyword or pick a photo to search.\nPhotos are matched against the photos saved in this app.",
+  "bgColor": "Background",
+  "textColor": "Text color",
+  "colorDefault": "Default",
+  "colorCustom": "Custom",
+  "colorPickerTitle": "Pick a color",
+  "ok": "OK",
+  "jumpToDate": "Go to date",
+  "settingsHolidays": "Show Korean holidays",
+  "settingsHolidaysSubtitle": "Mark public holidays in red with their names",
+
   "dateFormatFull": "EEEE, MMMM d, yyyy",
   "monthFormat": "MMMM yyyy"
 }

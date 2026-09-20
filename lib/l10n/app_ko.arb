@@ -73,6 +73,25 @@
   "settingsLicenses": "오픈소스 라이선스",
   "settingsDataNote": "모든 데이터는 이 기기 안에만 저장됩니다. 앱을 삭제하면 함께 삭제됩니다.",
 
+  "search": "검색",
+  "searchHint": "키워드를 입력하세요",
+  "searchByPhoto": "사진으로 검색",
+  "searchGo": "확인",
+  "searchNoResults": "검색 결과가 없어요",
+  "searchResults": "결과 {count}개",
+  "@searchResults": {"placeholders": {"count": {"type": "int"}}},
+  "searchSimilarPhoto": "비슷한 사진",
+  "searchEmptyHint": "키워드를 입력하거나 사진을 골라 검색하세요.\n사진은 이 앱에 넣어 둔 사진과 비교합니다.",
+  "bgColor": "배경색",
+  "textColor": "글자색",
+  "colorDefault": "기본",
+  "colorCustom": "직접 선택",
+  "colorPickerTitle": "색상 선택",
+  "ok": "확인",
+  "jumpToDate": "날짜로 이동",
+  "settingsHolidays": "한국 공휴일 표시",
+  "settingsHolidaysSubtitle": "공휴일을 빨간색으로, 이름과 함께 표시",
+
   "dateFormatFull": "yyyy년 M월 d일 EEEE",
   "monthFormat": "yyyy년 M월"
 }

@@ -210,6 +210,61 @@ class L10nEn extends L10n {
       'All data is stored only on this device and is removed when you uninstall the app.';
 
   @override
+  String get search => 'Search';
+
+  @override
+  String get searchHint => 'Enter a keyword';
+
+  @override
+  String get searchByPhoto => 'Search by photo';
+
+  @override
+  String get searchGo => 'Search';
+
+  @override
+  String get searchNoResults => 'No results';
+
+  @override
+  String searchResults(int count) {
+    return '$count results';
+  }
+
+  @override
+  String get searchSimilarPhoto => 'Similar photo';
+
+  @override
+  String get searchEmptyHint =>
+      'Type a keyword or pick a photo to search.\nPhotos are matched against the photos saved in this app.';
+
+  @override
+  String get bgColor => 'Background';
+
+  @override
+  String get textColor => 'Text color';
+
+  @override
+  String get colorDefault => 'Default';
+
+  @override
+  String get colorCustom => 'Custom';
+
+  @override
+  String get colorPickerTitle => 'Pick a color';
+
+  @override
+  String get ok => 'OK';
+
+  @override
+  String get jumpToDate => 'Go to date';
+
+  @override
+  String get settingsHolidays => 'Show Korean holidays';
+
+  @override
+  String get settingsHolidaysSubtitle =>
+      'Mark public holidays in red with their names';
+
+  @override
   String get dateFormatFull => 'EEEE, MMMM d, yyyy';
 
   @override
